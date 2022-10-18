@@ -136,6 +136,6 @@ setup(
     ext_modules=[CMakeExtension("midas")],
     cmdclass={"build_ext": CMakeBuild},
     zip_safe=False,
-    extras_require={"test": ["pytest>=6.0", "sklearn", "pandas"]},
-    python_requires=">=3.6",
+    extras_require={"test": ["pytest>=6.0", "scikit-learn", "pandas"]},
+    python_requires=">=3.7",
 )
