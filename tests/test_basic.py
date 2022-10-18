@@ -1,16 +1,17 @@
+import midas as md
 import pandas as pd
 from sklearn.metrics import roc_auc_score
-
-import midas as md
 
 # Load dataset
 data = pd.read_csv(
     "https://raw.githubusercontent.com/cliffxzx/midas/master/data/DARPA/darpa_processed.csv",
     names=["src", "dst", "timestamp"],
+    nrows=5000,
 )
 label = pd.read_csv(
     "https://raw.githubusercontent.com/cliffxzx/midas/master/data/DARPA/darpa_ground_truth.csv",
     names=["label"],
+    nrows=5000,
 )
 
 

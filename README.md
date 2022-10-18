@@ -1,50 +1,50 @@
-# MIDAS wrapped by pybind11
+# flow-midas: MIDAS wrapped by pybind11
 
-| CI                 | status                                                                |
-| ------------------ | --------------------------------------------------------------------- |
-| MSVC 2015          | [![AppVeyor][appveyor-badge]][appveyor-link]                          |
-| conda.recipe       | [![Conda Actions Status][actions-conda-badge]][actions-conda-link]    |
-| pip builds         | [![Pip Actions Status][actions-pip-badge]][actions-pip-link]          |
-| [`cibuildwheel`][] | [![Wheels Actions Status][actions-wheels-badge]][actions-wheels-link] |
+|   CI   |                  MSVC 2015                   |                            conda.recipe                            |                          pip builds                          |                          [`cibuildwheel`][]                           |
+| :----: | :------------------------------------------: | :----------------------------------------------------------------: | :----------------------------------------------------------: | :-------------------------------------------------------------------: |
+| Status | [![AppVeyor][appveyor-badge]][appveyor-link] | [![Conda Actions Status][actions-conda-badge]][actions-conda-link] | [![Pip Actions Status][actions-pip-badge]][actions-pip-link] | [![Wheels Actions Status][actions-wheels-badge]][actions-wheels-link] |
 
-[gitter-badge]: https://badges.gitter.im/pybind/Lobby.svg
-[gitter-link]: https://gitter.im/pybind/Lobby
-[actions-badge]: https://github.com/pybind/cmake_example/workflows/Tests/badge.svg
-[actions-conda-link]: https://github.com/pybind/cmake_example/actions?query=workflow%3A%22Conda
-[actions-conda-badge]: https://github.com/pybind/cmake_example/workflows/Conda/badge.svg
-[actions-pip-link]: https://github.com/pybind/cmake_example/actions?query=workflow%3A%22Pip
-[actions-pip-badge]: https://github.com/pybind/cmake_example/workflows/Pip/badge.svg
-[actions-wheels-link]: https://github.com/pybind/cmake_example/actions?query=workflow%3AWheels
-[actions-wheels-badge]: https://github.com/pybind/cmake_example/workflows/Wheels/badge.svg
-[appveyor-link]: https://ci.appveyor.com/project/dean0x7d/cmake-example/branch/master
-[appveyor-badge]: https://ci.appveyor.com/api/projects/status/57nnxfm4subeug43/branch/master?svg=true
+[actions-badge]: https://github.com/cliffxzx/midas/workflows/Tests/badge.svg
+[actions-conda-link]: https://github.com/cliffxzx/midas/actions?query=workflow%3A%22Conda
+[actions-conda-badge]: https://github.com/cliffxzx/midas/workflows/Conda/badge.svg
+[actions-pip-link]: https://github.com/cliffxzx/midas/actions?query=workflow%3A%22Pip
+[actions-pip-badge]: https://github.com/cliffxzx/midas/workflows/Pip/badge.svg
+[actions-wheels-link]: https://github.com/cliffxzx/midas/actions?query=workflow%3AWheels
+[actions-wheels-badge]: https://github.com/cliffxzx/midas/workflows/Wheels/badge.svg
+[appveyor-link]: https://ci.appveyor.com/project/cliffxzx/midas/branch/master
+[appveyor-badge]: https://ci.appveyor.com/api/projects/status/bnirfs3lq8aa7dls?svg=true
+
+This python package is a wrapper of [this c++ source](https://github.com/Stream-AD/MIDAS) code. Thanks to the author!
 
 ## Installation
 
 ```bash
-pip install MIDAS
+pip install flow-midas
 ```
 
 ## Example
 
 ```python
 import midas as md
+
 # Load dataset
 data = pd.read_csv("data/DARPA/darpa_processed.csv", names=['src', 'dst', 'timestamp'])
 label = pd.read_csv("data/DARPA/darpa_ground_truth.csv", names=['label'])
 
 models = {
-    'midas': md.midas(2, 769, 42),
-    'midasR': md.midasR(2, 769, 42, 0.5),
-    'midasF': md.midasF(2, 769, 42, 0.5, 0.5)
+    "NormalCore": md.NormalCore(2, 769, 42),
+    "RelationalCore": md.RelationalCore(2, 769, 42, 0.5),
+    "FilteringCore": md.FilteringCore(2, 769, 42, 0.5, 0.5),
 }
 
 for name, model in models.items():
     score = []
     for x in data.values:
         score.append(model(x[0], x[1], x[2]))
-    auc = roc_auc_score(label['label'], score)
-    print(f'{name} auc: {auc}')
+    auc = roc_auc_score(label["label"], score)
+    print(f"{name} auc: {auc}")
+
+    assert auc > 0
 ```
 
 ## Development
@@ -61,8 +61,9 @@ Just clone this repository and pip install. Note the `--recursive` option which 
 needed for the pybind11 submodule:
 
 ```bash
-git clone --recursive https://github.com/cliffxzx/midas.git
-pip install ./midas
+git clone --recursive https://github.com/cliffxzx/flow-midas.git
+pip install ./flow-midas
+
 ```
 
 With the `setup.py` file included in this example, the `pip install` command will
@@ -80,3 +81,28 @@ formats please refer to the Sphinx manual:
 - `make html`
 
 [`cibuildwheel`]: https://cibuildwheel.readthedocs.io
+
+## Citation
+
+If you use this code for your research, please consider citing the arXiv preprint
+
+```bibtex
+@misc{bhatia2020realtime,
+    title={Real-Time Anomaly Detection in Edge Streams},
+    author={Siddharth Bhatia and Rui Liu and Bryan Hooi and Minji Yoon and Kijung Shin and Christos Faloutsos},
+    booktitle={Transactions on Knowledge Discovery from Data (TKDD)},
+    year={2022}
+}
+
+```
+
+or the AAAI paper
+
+```bibtex
+@inproceedings{bhatia2020midas,
+    title="MIDAS: Microcluster-Based Detector of Anomalies in Edge Streams",
+    author="Siddharth {Bhatia} and Bryan {Hooi} and Minji {Yoon} and Kijung {Shin} and Christos {Faloutsos}",
+    booktitle="AAAI Conference on Artificial Intelligence (AAAI)",
+    year="2020"
+}
+```
